@@ -1,0 +1,362 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"trafo.c"
+  21              	.Ltext0:
+  22              		.file 1 "../trafo.c"
+ 987              		.align	2
+ 988              		.global	RGB2GrayMatrix
+ 990              	RGB2GrayMatrix:
+ 991              	.LFB0:
+   1:../trafo.c    **** 
+   2:../trafo.c    **** #include "trafo.h"
+   3:../trafo.c    **** #include "types.h"
+   4:../trafo.c    **** 
+   5:../trafo.c    **** //-----------------------------------------------------------------------------------
+   6:../trafo.c    **** //Las funciones que se definan en ensamblador debran borrarse de este fichero
+   7:../trafo.c    **** // o comentarse. De otra manera habra dos definciones de la misma funcion
+   8:../trafo.c    **** //-----------------------------------------------------------------------------------
+   9:../trafo.c    **** 
+  10:../trafo.c    **** 
+  11:../trafo.c    **** void RGB2GrayMatrix(pixelRGB orig[N][M], unsigned char dest[N][M]) {
+ 992              		.loc 1 11 0
+ 993              		.cfi_startproc
+ 994              		@ Function supports interworking.
+ 995              		@ args = 0, pretend = 0, frame = 16
+ 996              		@ frame_needed = 1, uses_anonymous_args = 0
+ 997 0000 10482DE9 		stmfd	sp!, {r4, fp, lr}
+ 998              	.LCFI0:
+ 999              		.cfi_def_cfa_offset 12
+ 1000 0004 08B08DE2 		add	fp, sp, #8
+ 1001              		.cfi_offset 14, -4
+ 1002              		.cfi_offset 11, -8
+ 1003              		.cfi_offset 4, -12
+ 1004              	.LCFI1:
+ 1005              		.cfi_def_cfa 11, 4
+ 1006 0008 14D04DE2 		sub	sp, sp, #20
+ 1007 000c 18000BE5 		str	r0, [fp, #-24]
+ 1008 0010 1C100BE5 		str	r1, [fp, #-28]
+  12:../trafo.c    ****     int i,j;
+  13:../trafo.c    ****     
+  14:../trafo.c    ****     for (i=0;i<N;i++)
+ 1009              		.loc 1 14 0
+ 1010 0014 0030A0E3 		mov	r3, #0
+ 1011 0018 10300BE5 		str	r3, [fp, #-16]
+ 1012 001c 430000EA 		b	.L2
+ 1013              	.L5:
+  15:../trafo.c    ****         for (j=0; j<M; j++)
+ 1014              		.loc 1 15 0
+ 1015 0020 0030A0E3 		mov	r3, #0
+ 1016 0024 14300BE5 		str	r3, [fp, #-20]
+ 1017 0028 3A0000EA 		b	.L3
+ 1018              	.L4:
+  16:../trafo.c    ****             dest[i][j] =  rgb2gray(orig[i][j].R, orig[i][j].G, orig[i][j].B);
+ 1019              		.loc 1 16 0 discriminator 2
+ 1020 002c 10301BE5 		ldr	r3, [fp, #-16]
+ 1021 0030 8333A0E1 		mov	r3, r3, asl #7
+ 1022 0034 1C201BE5 		ldr	r2, [fp, #-28]
+ 1023 0038 034082E0 		add	r4, r2, r3
+ 1024 003c 10201BE5 		ldr	r2, [fp, #-16]
+ 1025 0040 0230A0E1 		mov	r3, r2
+ 1026 0044 8330A0E1 		mov	r3, r3, asl #1
+ 1027 0048 023083E0 		add	r3, r3, r2
+ 1028 004c 8333A0E1 		mov	r3, r3, asl #7
+ 1029 0050 18201BE5 		ldr	r2, [fp, #-24]
+ 1030 0054 031082E0 		add	r1, r2, r3
+ 1031 0058 14201BE5 		ldr	r2, [fp, #-20]
+ 1032 005c 0230A0E1 		mov	r3, r2
+ 1033 0060 8330A0E1 		mov	r3, r3, asl #1
+ 1034 0064 023083E0 		add	r3, r3, r2
+ 1035 0068 033081E0 		add	r3, r1, r3
+ 1036 006c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1037 0070 0300A0E1 		mov	r0, r3
+ 1038 0074 10201BE5 		ldr	r2, [fp, #-16]
+ 1039 0078 0230A0E1 		mov	r3, r2
+ 1040 007c 8330A0E1 		mov	r3, r3, asl #1
+ 1041 0080 023083E0 		add	r3, r3, r2
+ 1042 0084 8333A0E1 		mov	r3, r3, asl #7
+ 1043 0088 18201BE5 		ldr	r2, [fp, #-24]
+ 1044 008c 03C082E0 		add	ip, r2, r3
+ 1045 0090 14201BE5 		ldr	r2, [fp, #-20]
+ 1046 0094 0110A0E3 		mov	r1, #1
+ 1047 0098 0230A0E1 		mov	r3, r2
+ 1048 009c 8330A0E1 		mov	r3, r3, asl #1
+ 1049 00a0 023083E0 		add	r3, r3, r2
+ 1050 00a4 03308CE0 		add	r3, ip, r3
+ 1051 00a8 013083E0 		add	r3, r3, r1
+ 1052 00ac 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1053 00b0 0310A0E1 		mov	r1, r3
+ 1054 00b4 10201BE5 		ldr	r2, [fp, #-16]
+ 1055 00b8 0230A0E1 		mov	r3, r2
+ 1056 00bc 8330A0E1 		mov	r3, r3, asl #1
+ 1057 00c0 023083E0 		add	r3, r3, r2
+ 1058 00c4 8333A0E1 		mov	r3, r3, asl #7
+ 1059 00c8 18201BE5 		ldr	r2, [fp, #-24]
+ 1060 00cc 03E082E0 		add	lr, r2, r3
+ 1061 00d0 14201BE5 		ldr	r2, [fp, #-20]
+ 1062 00d4 02C0A0E3 		mov	ip, #2
+ 1063 00d8 0230A0E1 		mov	r3, r2
+ 1064 00dc 8330A0E1 		mov	r3, r3, asl #1
+ 1065 00e0 023083E0 		add	r3, r3, r2
+ 1066 00e4 03308EE0 		add	r3, lr, r3
+ 1067 00e8 0C3083E0 		add	r3, r3, ip
+ 1068 00ec 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1069 00f0 0320A0E1 		mov	r2, r3
+ 1070 00f4 FEFFFFEB 		bl	rgb2gray
+ 1071 00f8 0030A0E1 		mov	r3, r0
+ 1072 00fc FF2003E2 		and	r2, r3, #255
+ 1073 0100 14301BE5 		ldr	r3, [fp, #-20]
+ 1074 0104 033084E0 		add	r3, r4, r3
+ 1075 0108 0020C3E5 		strb	r2, [r3, #0]
+  15:../trafo.c    ****         for (j=0; j<M; j++)
+ 1076              		.loc 1 15 0 discriminator 2
+ 1077 010c 14301BE5 		ldr	r3, [fp, #-20]
+ 1078 0110 013083E2 		add	r3, r3, #1
+ 1079 0114 14300BE5 		str	r3, [fp, #-20]
+ 1080              	.L3:
+  15:../trafo.c    ****         for (j=0; j<M; j++)
+ 1081              		.loc 1 15 0 is_stmt 0 discriminator 1
+ 1082 0118 14301BE5 		ldr	r3, [fp, #-20]
+ 1083 011c 7F0053E3 		cmp	r3, #127
+ 1084 0120 C1FFFFDA 		ble	.L4
+  14:../trafo.c    ****     for (i=0;i<N;i++)
+ 1085              		.loc 1 14 0 is_stmt 1
+ 1086 0124 10301BE5 		ldr	r3, [fp, #-16]
+ 1087 0128 013083E2 		add	r3, r3, #1
+ 1088 012c 10300BE5 		str	r3, [fp, #-16]
+ 1089              	.L2:
+  14:../trafo.c    ****     for (i=0;i<N;i++)
+ 1090              		.loc 1 14 0 is_stmt 0 discriminator 1
+ 1091 0130 10301BE5 		ldr	r3, [fp, #-16]
+ 1092 0134 7F0053E3 		cmp	r3, #127
+ 1093 0138 B8FFFFDA 		ble	.L5
+  17:../trafo.c    ****     
+  18:../trafo.c    **** }
+ 1094              		.loc 1 18 0 is_stmt 1
+ 1095 013c 08D04BE2 		sub	sp, fp, #8
+ 1096 0140 1048BDE8 		ldmfd	sp!, {r4, fp, lr}
+ 1097 0144 1EFF2FE1 		bx	lr
+ 1098              		.cfi_endproc
+ 1099              	.LFE0:
+ 1101              		.align	2
+ 1102              		.global	Gray2BinaryMatrix
+ 1104              	Gray2BinaryMatrix:
+ 1105              	.LFB1:
+  19:../trafo.c    **** 
+  20:../trafo.c    **** 
+  21:../trafo.c    **** void Gray2BinaryMatrix(unsigned char orig[N][M], unsigned char dest[N][M]) {
+ 1106              		.loc 1 21 0
+ 1107              		.cfi_startproc
+ 1108              		@ Function supports interworking.
+ 1109              		@ args = 0, pretend = 0, frame = 24
+ 1110              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1111              		@ link register save eliminated.
+ 1112 0148 04B02DE5 		str	fp, [sp, #-4]!
+ 1113              	.LCFI2:
+ 1114              		.cfi_def_cfa_offset 4
+ 1115 014c 00B08DE2 		add	fp, sp, #0
+ 1116              		.cfi_offset 11, -4
+ 1117              	.LCFI3:
+ 1118              		.cfi_def_cfa_register 11
+ 1119 0150 1CD04DE2 		sub	sp, sp, #28
+ 1120 0154 18000BE5 		str	r0, [fp, #-24]
+ 1121 0158 1C100BE5 		str	r1, [fp, #-28]
+  22:../trafo.c    ****     int i,j;
+  23:../trafo.c    ****     int umbral = 127;
+ 1122              		.loc 1 23 0
+ 1123 015c 7F30A0E3 		mov	r3, #127
+ 1124 0160 10300BE5 		str	r3, [fp, #-16]
+  24:../trafo.c    ****     
+  25:../trafo.c    ****     for (i=0;i<N;i++)
+ 1125              		.loc 1 25 0
+ 1126 0164 0030A0E3 		mov	r3, #0
+ 1127 0168 08300BE5 		str	r3, [fp, #-8]
+ 1128 016c 270000EA 		b	.L7
+ 1129              	.L12:
+  26:../trafo.c    ****         for (j=0; j<M; j++)
+ 1130              		.loc 1 26 0
+ 1131 0170 0030A0E3 		mov	r3, #0
+ 1132 0174 0C300BE5 		str	r3, [fp, #-12]
+ 1133 0178 1E0000EA 		b	.L8
+ 1134              	.L11:
+  27:../trafo.c    ****             if (orig[i][j] > umbral)
+ 1135              		.loc 1 27 0
+ 1136 017c 08301BE5 		ldr	r3, [fp, #-8]
+ 1137 0180 8333A0E1 		mov	r3, r3, asl #7
+ 1138 0184 18201BE5 		ldr	r2, [fp, #-24]
+ 1139 0188 032082E0 		add	r2, r2, r3
+ 1140 018c 0C301BE5 		ldr	r3, [fp, #-12]
+ 1141 0190 033082E0 		add	r3, r2, r3
+ 1142 0194 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1143 0198 0320A0E1 		mov	r2, r3
+ 1144 019c 10301BE5 		ldr	r3, [fp, #-16]
+ 1145 01a0 030052E1 		cmp	r2, r3
+ 1146 01a4 080000DA 		ble	.L9
+  28:../trafo.c    ****                 dest[i][j]=255;
+ 1147              		.loc 1 28 0
+ 1148 01a8 08301BE5 		ldr	r3, [fp, #-8]
+ 1149 01ac 8333A0E1 		mov	r3, r3, asl #7
+ 1150 01b0 1C201BE5 		ldr	r2, [fp, #-28]
+ 1151 01b4 032082E0 		add	r2, r2, r3
+ 1152 01b8 0C301BE5 		ldr	r3, [fp, #-12]
+ 1153 01bc 033082E0 		add	r3, r2, r3
+ 1154 01c0 0020E0E3 		mvn	r2, #0
+ 1155 01c4 0020C3E5 		strb	r2, [r3, #0]
+ 1156 01c8 070000EA 		b	.L10
+ 1157              	.L9:
+  29:../trafo.c    ****             else
+  30:../trafo.c    ****                  dest[i][j]=0;
+ 1158              		.loc 1 30 0
+ 1159 01cc 08301BE5 		ldr	r3, [fp, #-8]
+ 1160 01d0 8333A0E1 		mov	r3, r3, asl #7
+ 1161 01d4 1C201BE5 		ldr	r2, [fp, #-28]
+ 1162 01d8 032082E0 		add	r2, r2, r3
+ 1163 01dc 0C301BE5 		ldr	r3, [fp, #-12]
+ 1164 01e0 033082E0 		add	r3, r2, r3
+ 1165 01e4 0020A0E3 		mov	r2, #0
+ 1166 01e8 0020C3E5 		strb	r2, [r3, #0]
+ 1167              	.L10:
+  26:../trafo.c    ****         for (j=0; j<M; j++)
+ 1168              		.loc 1 26 0
+ 1169 01ec 0C301BE5 		ldr	r3, [fp, #-12]
+ 1170 01f0 013083E2 		add	r3, r3, #1
+ 1171 01f4 0C300BE5 		str	r3, [fp, #-12]
+ 1172              	.L8:
+  26:../trafo.c    ****         for (j=0; j<M; j++)
+ 1173              		.loc 1 26 0 is_stmt 0 discriminator 1
+ 1174 01f8 0C301BE5 		ldr	r3, [fp, #-12]
+ 1175 01fc 7F0053E3 		cmp	r3, #127
+ 1176 0200 DDFFFFDA 		ble	.L11
+  25:../trafo.c    ****     for (i=0;i<N;i++)
+ 1177              		.loc 1 25 0 is_stmt 1
+ 1178 0204 08301BE5 		ldr	r3, [fp, #-8]
+ 1179 0208 013083E2 		add	r3, r3, #1
+ 1180 020c 08300BE5 		str	r3, [fp, #-8]
+ 1181              	.L7:
+  25:../trafo.c    ****     for (i=0;i<N;i++)
+ 1182              		.loc 1 25 0 is_stmt 0 discriminator 1
+ 1183 0210 08301BE5 		ldr	r3, [fp, #-8]
+ 1184 0214 7F0053E3 		cmp	r3, #127
+ 1185 0218 D4FFFFDA 		ble	.L12
+  31:../trafo.c    ****     
+  32:../trafo.c    **** }
+ 1186              		.loc 1 32 0 is_stmt 1
+ 1187 021c 00D08BE2 		add	sp, fp, #0
+ 1188 0220 04B09DE4 		ldmfd	sp!, {fp}
+ 1189 0224 1EFF2FE1 		bx	lr
+ 1190              		.cfi_endproc
+ 1191              	.LFE1:
+ 1193              		.align	2
+ 1194              		.global	contarBlancos
+ 1196              	contarBlancos:
+ 1197              	.LFB2:
+  33:../trafo.c    **** 
+  34:../trafo.c    **** 
+  35:../trafo.c    **** 
+  36:../trafo.c    **** void contarBlancos(unsigned char mat[N][M], unsigned char vector[N]) {
+ 1198              		.loc 1 36 0
+ 1199              		.cfi_startproc
+ 1200              		@ Function supports interworking.
+ 1201              		@ args = 0, pretend = 0, frame = 16
+ 1202              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1203              		@ link register save eliminated.
+ 1204 0228 04B02DE5 		str	fp, [sp, #-4]!
+ 1205              	.LCFI4:
+ 1206              		.cfi_def_cfa_offset 4
+ 1207 022c 00B08DE2 		add	fp, sp, #0
+ 1208              		.cfi_offset 11, -4
+ 1209              	.LCFI5:
+ 1210              		.cfi_def_cfa_register 11
+ 1211 0230 14D04DE2 		sub	sp, sp, #20
+ 1212 0234 10000BE5 		str	r0, [fp, #-16]
+ 1213 0238 14100BE5 		str	r1, [fp, #-20]
+  37:../trafo.c    ****     int i,j;
+  38:../trafo.c    **** 
+  39:../trafo.c    ****     for (i=0;i<N;i++) {
+ 1214              		.loc 1 39 0
+ 1215 023c 0030A0E3 		mov	r3, #0
+ 1216 0240 08300BE5 		str	r3, [fp, #-8]
+ 1217 0244 200000EA 		b	.L14
+ 1218              	.L18:
+  40:../trafo.c    ****         vector[i]=0;
+ 1219              		.loc 1 40 0
+ 1220 0248 08301BE5 		ldr	r3, [fp, #-8]
+ 1221 024c 14201BE5 		ldr	r2, [fp, #-20]
+ 1222 0250 033082E0 		add	r3, r2, r3
+ 1223 0254 0020A0E3 		mov	r2, #0
+ 1224 0258 0020C3E5 		strb	r2, [r3, #0]
+  41:../trafo.c    ****         for (j=0; j<M; j++) {
+ 1225              		.loc 1 41 0
+ 1226 025c 0030A0E3 		mov	r3, #0
+ 1227 0260 0C300BE5 		str	r3, [fp, #-12]
+ 1228 0264 120000EA 		b	.L15
+ 1229              	.L17:
+  42:../trafo.c    ****             if ( mat[i][j] == 1) vector[i]++;
+ 1230              		.loc 1 42 0
+ 1231 0268 08301BE5 		ldr	r3, [fp, #-8]
+ 1232 026c 8333A0E1 		mov	r3, r3, asl #7
+ 1233 0270 10201BE5 		ldr	r2, [fp, #-16]
+ 1234 0274 032082E0 		add	r2, r2, r3
+ 1235 0278 0C301BE5 		ldr	r3, [fp, #-12]
+ 1236 027c 033082E0 		add	r3, r2, r3
+ 1237 0280 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 1238 0284 010053E3 		cmp	r3, #1
+ 1239 0288 0600001A 		bne	.L16
+ 1240              		.loc 1 42 0 is_stmt 0 discriminator 1
+ 1241 028c 08301BE5 		ldr	r3, [fp, #-8]
+ 1242 0290 14201BE5 		ldr	r2, [fp, #-20]
+ 1243 0294 033082E0 		add	r3, r2, r3
+ 1244 0298 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 1245 029c 012082E2 		add	r2, r2, #1
+ 1246 02a0 FF2002E2 		and	r2, r2, #255
+ 1247 02a4 0020C3E5 		strb	r2, [r3, #0]
+ 1248              	.L16:
+  41:../trafo.c    ****         for (j=0; j<M; j++) {
+ 1249              		.loc 1 41 0 is_stmt 1
+ 1250 02a8 0C301BE5 		ldr	r3, [fp, #-12]
+ 1251 02ac 013083E2 		add	r3, r3, #1
+ 1252 02b0 0C300BE5 		str	r3, [fp, #-12]
+ 1253              	.L15:
+  41:../trafo.c    ****         for (j=0; j<M; j++) {
+ 1254              		.loc 1 41 0 is_stmt 0 discriminator 1
+ 1255 02b4 0C301BE5 		ldr	r3, [fp, #-12]
+ 1256 02b8 7F0053E3 		cmp	r3, #127
+ 1257 02bc E9FFFFDA 		ble	.L17
+  39:../trafo.c    ****     for (i=0;i<N;i++) {
+ 1258              		.loc 1 39 0 is_stmt 1
+ 1259 02c0 08301BE5 		ldr	r3, [fp, #-8]
+ 1260 02c4 013083E2 		add	r3, r3, #1
+ 1261 02c8 08300BE5 		str	r3, [fp, #-8]
+ 1262              	.L14:
+  39:../trafo.c    ****     for (i=0;i<N;i++) {
+ 1263              		.loc 1 39 0 is_stmt 0 discriminator 1
+ 1264 02cc 08301BE5 		ldr	r3, [fp, #-8]
+ 1265 02d0 7F0053E3 		cmp	r3, #127
+ 1266 02d4 DBFFFFDA 		ble	.L18
+  43:../trafo.c    ****         }
+  44:../trafo.c    ****     }
+  45:../trafo.c    **** }
+ 1267              		.loc 1 45 0 is_stmt 1
+ 1268 02d8 00D08BE2 		add	sp, fp, #0
+ 1269 02dc 04B09DE4 		ldmfd	sp!, {fp}
+ 1270 02e0 1EFF2FE1 		bx	lr
+ 1271              		.cfi_endproc
+ 1272              	.LFE2:
+ 1274              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 trafo.c
+C:\Users\marga\AppData\Local\Temp\cc6JAwDh.s:987    .text:00000000 $a
+C:\Users\marga\AppData\Local\Temp\cc6JAwDh.s:990    .text:00000000 RGB2GrayMatrix
+C:\Users\marga\AppData\Local\Temp\cc6JAwDh.s:1104   .text:00000148 Gray2BinaryMatrix
+C:\Users\marga\AppData\Local\Temp\cc6JAwDh.s:1196   .text:00000228 contarBlancos
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+rgb2gray

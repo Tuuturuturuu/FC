@@ -1,0 +1,178 @@
+
+pract3.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000020  0c000000  0c000000  00008000  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .bss          00000020  0c000020  0c000020  00008020  2**0
+                  ALLOC
+  2 .text         000000e0  0c000040  0c000040  00008040  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .ARM.attributes 00000022  00000000  00000000  00008120  2**0
+                  CONTENTS, READONLY
+  4 .debug_line   00000071  00000000  00000000  00008142  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000060  00000000  00000000  000081b3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000014  00000000  00000000  00008213  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_aranges 00000020  00000000  00000000  00008228  2**3
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+0c000040 <start>:
+.bss
+B:         .space N*4
+.text
+
+start:
+    ldr SP, =_stack
+ c000040:	e59fd0cc 	ldr	sp, [pc, #204]	; c000114 <fin_for_copia_inv+0x8>
+    mov fp, #0        @inicializo fp
+ c000044:	e3a0b000 	mov	fp, #0
+    ldr r6, =A        @Dir A
+ c000048:	e59f60c8 	ldr	r6, [pc, #200]	; c000118 <fin_for_copia_inv+0xc>
+    ldr r7, =B        @Dir B
+ c00004c:	e59f70c8 	ldr	r7, [pc, #200]	; c00011c <fin_for_copia_inv+0x10>
+    mov r8, #0        @i = 0
+ c000050:	e3a08000 	mov	r8, #0
+
+0c000054 <for>:
+
+for:    cmp r8, #N
+ c000054:	e3580008 	cmp	r8, #8
+    bge fin
+ c000058:	aa000008 	bge	c000080 <fin>
+    mov r0, r6
+ c00005c:	e1a00006 	mov	r0, r6
+    mov r1, #N
+ c000060:	e3a01008 	mov	r1, #8
+    bl MAX
+ c000064:	eb00000a 	bl	c000094 <MAX>
+
+    ldr r9, [r6, r0, lsl#2]  @A[ind]
+ c000068:	e7969100 	ldr	r9, [r6, r0, lsl #2]
+    str r9, [r7, r8, lsl#2]  @B[j] = A[ind]
+ c00006c:	e7879108 	str	r9, [r7, r8, lsl #2]
+    mov r9, #0
+ c000070:	e3a09000 	mov	r9, #0
+    str r9, [r6, r0, lsl#2] @A[ind] = 0;
+ c000074:	e7869100 	str	r9, [r6, r0, lsl #2]
+    add r8, r8, #1         @i++
+ c000078:	e2888001 	add	r8, r8, #1
+    b for
+ c00007c:	eafffff4 	b	c000054 <for>
+
+0c000080 <fin>:
+
+fin:
+    mov r0, r6 @A
+ c000080:	e1a00006 	mov	r0, r6
+    mov r1, #N @N
+ c000084:	e3a01008 	mov	r1, #8
+    mov r2, r7 @B
+ c000088:	e1a02007 	mov	r2, r7
+    bl copia_inv
+ c00008c:	eb000011 	bl	c0000d8 <copia_inv>
+    b .
+ c000090:	eafffffe 	b	c000090 <fin+0x10>
+
+0c000094 <MAX>:
+
+MAX:
+    push {r4,r5, fp}
+ c000094:	e92d0830 	push	{r4, r5, fp}
+    add fp, sp, #8
+ c000098:	e28db008 	add	fp, sp, #8
+    mov r2, #0    @j = 0
+ c00009c:	e3a02000 	mov	r2, #0
+    mov r3, #0    @ind = 0
+ c0000a0:	e3a03000 	mov	r3, #0
+    mov r4, #0    @max = 0
+ c0000a4:	e3a04000 	mov	r4, #0
+
+0c0000a8 <for_MAX>:
+
+for_MAX:
+	cmp r2, r1
+ c0000a8:	e1520001 	cmp	r2, r1
+    bge fin_for
+ c0000ac:	aa000006 	bge	c0000cc <fin_for>
+    ldr r5, [r0, r2, lsl#2]
+ c0000b0:	e7905102 	ldr	r5, [r0, r2, lsl #2]
+
+0c0000b4 <if>:
+
+if:
+	cmp r5, r4
+ c0000b4:	e1550004 	cmp	r5, r4
+    ble fin_if
+ c0000b8:	da000001 	ble	c0000c4 <fin_if>
+    mov r4, r5
+ c0000bc:	e1a04005 	mov	r4, r5
+    mov r3, r2
+ c0000c0:	e1a03002 	mov	r3, r2
+
+0c0000c4 <fin_if>:
+
+fin_if:
+    add r2, r2, #1
+ c0000c4:	e2822001 	add	r2, r2, #1
+    b for_MAX
+ c0000c8:	eafffff6 	b	c0000a8 <for_MAX>
+
+0c0000cc <fin_for>:
+
+fin_for:
+    mov r0, r3
+ c0000cc:	e1a00003 	mov	r0, r3
+    pop {r4,r5, fp}
+ c0000d0:	e8bd0830 	pop	{r4, r5, fp}
+    mov pc, lr
+ c0000d4:	e1a0f00e 	mov	pc, lr
+
+0c0000d8 <copia_inv>:
+
+copia_inv:
+    push {r4-r6, fp}
+ c0000d8:	e92d0870 	push	{r4, r5, r6, fp}
+    add fp, sp, #12
+ c0000dc:	e28db00c 	add	fp, sp, #12
+    mov r3, #0  @j=0
+ c0000e0:	e3a03000 	mov	r3, #0
+    mov r4, #0 	@aux=0
+ c0000e4:	e3a04000 	mov	r4, #0
+    sub r4, r1, #1
+ c0000e8:	e2414001 	sub	r4, r1, #1
+    mov r5, #0
+ c0000ec:	e3a05000 	mov	r5, #0
+
+0c0000f0 <for_copia_inv>:
+
+for_copia_inv:    cmp r3, r1
+ c0000f0:	e1530001 	cmp	r3, r1
+    bge fin_for_copia_inv
+ c0000f4:	aa000004 	bge	c00010c <fin_for_copia_inv>
+    sub r5, r4, r3
+ c0000f8:	e0445003 	sub	r5, r4, r3
+    ldr r6, [r2, r5, lsl#2]
+ c0000fc:	e7926105 	ldr	r6, [r2, r5, lsl #2]
+    str r6, [r0, r3, lsl#2]
+ c000100:	e7806103 	str	r6, [r0, r3, lsl #2]
+    add r3, r3, #1
+ c000104:	e2833001 	add	r3, r3, #1
+    b for_copia_inv
+ c000108:	eafffff8 	b	c0000f0 <for_copia_inv>
+
+0c00010c <fin_for_copia_inv>:
+
+fin_for_copia_inv:
+    pop {r4-r6, fp}
+ c00010c:	e8bd0870 	pop	{r4, r5, r6, fp}
+    mov pc, lr
+ c000110:	e1a0f00e 	mov	pc, lr
+ c000114:	0c700800 	.word	0x0c700800
+ c000118:	0c000000 	.word	0x0c000000
+ c00011c:	0c000020 	.word	0x0c000020

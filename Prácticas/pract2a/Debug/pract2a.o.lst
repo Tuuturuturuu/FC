@@ -1,0 +1,67 @@
+   1              	# 1 "../pract2a.asm"
+   1              	/*-----------------------------------------------------------------
+   0              	
+   0              	
+   0              	
+   2              	**
+   3              	**  Fichero:
+   4              	**    pract2a.asm  10/6/2014
+   5              	**
+   6              	**    Fundamentos de Computadores
+   7              	**    Dpto. de Arquitectura de Computadores y Automática
+   8              	**    Facultad de Informática. Universidad Complutense de Madrid
+   9              	**
+  10              	**  Propósito:
+  11              	**    Busca el valor máximo de un vector de enteros positivos
+  12              	**
+  13              	**  Notas de diseño:
+  14              	**
+  15              	**---------------------------------------------------------------*/
+  16              	
+  17              	.global start
+  18              	
+  19              	.EQU 	N, 8
+  20              	
+  21              	.data
+  22 0000 07000000 	A: 		.word 7,3,25,4,75,2,1,1
+  22      03000000 
+  22      19000000 
+  22      04000000 
+  22      4B000000 
+  23              	.bss
+  24 0000 00000000 	max: 	.space 4
+  25              	
+  26              	.text
+  27              	start:
+  28 0000 0000A0E3 			mov r0, #0
+  29 0004 30109FE5 			ldr r1,=max		@ Leo la dir. de max
+  30 0008 000081E5 			str r0,[r1]		@ Escribo 0 en max
+  31 000c 2C209FE5 			ldr r2,= A
+  32 0010 0030A0E3 			mov r3, #0		@i=0
+  33              	for:
+  34 0014 080053E3 			cmp r3,#N @comparo i con 8 (for i< 8)
+  35 0018 060000AA 			bge fin @si es 8 se acaba
+  36 001c 034192E7 			ldr r4,[r2,r3,lsl#2] @ meto A[i] en r4(r4 sera max)
+  37 0020 010054E1 			cmp r4, r1 @comparo A[i] con el max actual (0)
+  38 0024 013083E2 			add r3,r3,#1 @i++
+  39 0028 F9FFFFDA 			ble for @si A[i] es menor q el max actual sigue el for
+  40 002c 0400A0E1 			mov  r0, r4
+  41 0030 004081E5 		    str r4, [r1]@si A[i] es mayor igual q el max, se guarda A[i] como el max nuevo
+  42 0034 F6FFFFEA 			b for
+  43              	fin:
+  44 0038 FEFFFFEA 			b .
+  45 003c 00000000 	.end
+  45      00000000 
+DEFINED SYMBOLS
+      ../pract2a.asm:27     .text:00000000 start
+      ../pract2a.asm:19     *ABS*:00000008 N
+      ../pract2a.asm:22     .data:00000000 A
+      ../pract2a.asm:24     .bss:00000000 max
+      ../pract2a.asm:24     .bss:00000000 $d
+      ../pract2a.asm:28     .text:00000000 $a
+      ../pract2a.asm:33     .text:00000014 for
+      ../pract2a.asm:43     .text:00000038 fin
+      ../pract2a.asm:45     .text:0000003c $d
+                   .debug_aranges:0000000c $d
+
+NO UNDEFINED SYMBOLS
